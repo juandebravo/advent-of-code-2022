@@ -1,4 +1,4 @@
-use std::{env, str::Split};
+use std::env;
 
 fn get_max(a: i32, b: i32) -> i32 {
     if a > b {
@@ -21,11 +21,11 @@ fn get_data(cookie: String) -> Result<String, reqwest::Error> {
     resp?.text()
 }
 
-fn part1(lines: Split<&str>) -> i32 {
+fn part1(lines: &Vec<&str>) -> i32 {
     let mut curr = 0;
     let mut max = 0;
 
-    for line in lines {
+    for &line in lines {
         if line == "" {
             max = get_max(max, curr);
             curr = 0;
@@ -42,19 +42,22 @@ fn part1(lines: Split<&str>) -> i32 {
     max
 }
 
-fn main() {
-    assert!(env::args().len() > 1);
-    let mut args = env::args().skip(1);
+fn part2(_lines: &[&str]) -> i32 {
+    0
+}
 
-    let cookie = format!(
-        "session={}",
-        args.next().expect("Cookie argument not found")
-    );
+fn main() {
+    let args: Vec<String> = env::args().skip(1).collect();
+    assert!(args.len() == 1);
+
+    let cookie = format!("session={}", args[0]);
+
     let data = get_data(cookie);
     match data {
         Ok(value) => {
-            let lines = value.split("\n");
-            println!("{}", part1(lines))
+            let lines = value.split("\n").collect::<Vec<&str>>();
+            println!("{}", part1(&lines));
+            println!("{}", part2(&lines));
         }
         Err(e) => panic!("{}", format!("Invalid data {:?}", e)),
     }
