@@ -29,14 +29,10 @@ fn part1(lines: &Vec<&str>) -> i32 {
         if line == "" {
             max = get_max(max, curr);
             curr = 0;
+        } else if let Ok(x) = String::from(line).parse::<i32>() {
+            curr += x;
         } else {
-            let line_num = String::from(line).parse::<i32>();
-            match line_num {
-                Ok(x) => {
-                    curr += x;
-                }
-                Err(_) => panic!("Invalid number"),
-            }
+            panic!("Invalid number")
         }
     }
     max
