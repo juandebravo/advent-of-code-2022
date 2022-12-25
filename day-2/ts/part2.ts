@@ -62,7 +62,6 @@ async function main() {
     assertIsValidInput(they);
     assertIsValidResult(me);
     points += getPoints(they, me);
-    console.log(they, me, getPoints(they, me));
   }
   console.log(points);
 }
