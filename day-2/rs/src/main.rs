@@ -1,40 +1,33 @@
+use reqwest::blocking::Client;
 use std::env;
 
 fn get_data(cookie: String) -> Result<String, reqwest::Error> {
-    let url = "https://adventofcode.com/2022/day/2/input".to_string();
-    let client = reqwest::blocking::Client::new();
+    let url = "https://adventofcode.com/2022/day/2/input";
+    let client = Client::new();
 
     let resp = client.get(url).header("cookie", cookie).send();
     resp?.text()
-}
-
-fn same_value(they: char, me: char) -> bool {
-    if they == 'A' && me == 'X' {
-        return true;
-    } else if they == 'B' && me == 'Y' {
-        return true;
-    } else if they == 'C' && me == 'Z' {
-        return true;
-    }
-    false
 }
 
 fn get_first_char(value: &str) -> char {
     value.chars().next().unwrap()
 }
 
-fn a_beats_b(a: char, b: char) -> bool {
-    if a == 'A' && b == 'Z' {
-        return true;
-    } else if a == 'B' && b == 'X' {
-        return true;
-    } else if a == 'C' && b == 'Y' {
-        return true;
+fn same_value(they: char, me: char) -> bool {
+    match (they, me) {
+        ('A', 'X') | ('B', 'Y') | ('C', 'Z') => true,
+        _ => false,
     }
-    false
 }
 
-fn get_points_for_input(a: char) -> u32 {
+fn a_beats_b(a: char, b: char) -> bool {
+    match (a, b) {
+        ('A', 'Z') | ('B', 'X') | ('C', 'Y') => true,
+        _ => false,
+    }
+}
+
+fn get_points_for_input(a: &char) -> u32 {
     match a {
         'X' => 1,
         'Y' => 2,
@@ -52,7 +45,7 @@ fn get_points_part_1(they: &char, me: &char) -> u32 {
             outcome = 6;
         }
     }
-    let my_points = get_points_for_input(*me);
+    let my_points = get_points_for_input(me);
     outcome + my_points
 }
 
