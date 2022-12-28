@@ -10,7 +10,7 @@ fn get_data(cookie: String) -> Result<String, reqwest::Error> {
     resp?.text()
 }
 
-fn check_full_overlap(a: Vec<u8>, b: Vec<u8>) -> bool {
+fn check_overlap(a: Vec<u8>, b: Vec<u8>, full: bool) -> bool {
     if a.len() == 0 || b.len() == 0 {
         return false;
     }
@@ -19,23 +19,31 @@ fn check_full_overlap(a: Vec<u8>, b: Vec<u8>) -> bool {
     let b_ = if a.len() > b.len() { &a } else { &b };
 
     for x in a_ {
-        if !b_.contains(&x) {
+        if !full && b_.contains(&x) {
+            // if we only require partial overlap and x is contained,
+            // return true
+            return true;
+        } else if full && !b_.contains(&x) {
+            // if we require full overlap and one is missing, return false
             return false;
         }
     }
-    true
+    full
 }
 
 #[test]
-fn test_check_full_overlap() {
-    assert_eq!(check_full_overlap(vec![1, 2, 3], vec![4, 5, 6]), false);
-    assert_eq!(check_full_overlap(vec![1, 2, 3], vec![1]), true);
-    assert_eq!(check_full_overlap(vec![1, 2, 3], vec![1, 2, 3]), true);
+fn test_check_overlap() {
+    assert_eq!(check_overlap(vec![1, 2, 3], vec![4, 5, 6], true), false);
+    assert_eq!(check_overlap(vec![1, 2, 3], vec![1], true), true);
+    assert_eq!(check_overlap(vec![1, 2, 3], vec![1, 2, 3], true), true);
     assert_eq!(
-        check_full_overlap(vec![1, 2, 3, 4, 5, 6], vec![1, 2, 3]),
+        check_overlap(vec![1, 2, 3, 4, 5, 6], vec![1, 2, 3], true),
         true
     );
-    assert_eq!(check_full_overlap(vec![1], vec![]), false);
+    assert_eq!(check_overlap(vec![1], vec![], true), false);
+
+    assert_eq!(check_overlap(vec![1, 2, 3, 4], vec![4, 5, 6], false), true);
+    assert_eq!(check_overlap(vec![1, 8], vec![1, 2, 3], false), true);
 }
 
 fn vector_from_input(input: &str) -> Vec<u8> {
@@ -67,63 +75,37 @@ fn test_vector_from_input() {
     assert_eq!(vector_from_input("3-3"), vec![3]);
 }
 
-fn check_line(input: &str) -> bool {
+fn check_line(input: &str, full: bool) -> bool {
     let (a, b) = input.split_at(input.find(',').unwrap());
-    check_full_overlap(vector_from_input(a), vector_from_input(&b[1..]))
+    check_overlap(vector_from_input(a), vector_from_input(&b[1..]), full)
 }
 
 #[test]
 fn test_check_line() {
-    assert_eq!(check_line("48-50,48-49"), true);
-    assert_eq!(check_line("5-89,5-5"), true);
-    assert_eq!(check_line("17-57,55-96"), false);
+    assert_eq!(check_line("48-50,48-49", true), true);
+    assert_eq!(check_line("5-89,5-5", true), true);
+    assert_eq!(check_line("17-57,55-96", true), false);
+}
+
+fn part(lines: &[&str], full: bool) -> u32 {
+    let mut counter = 0;
+    for line in lines {
+        if line.trim().len() == 0 {
+            continue;
+        }
+        if check_line(&line.trim(), full) {
+            counter += 1;
+        }
+    }
+    counter
 }
 
 fn part1(lines: &[&str]) -> u32 {
-    let mut counter = 0;
-    for line in lines {
-        if line.trim().len() == 0 {
-            continue;
-        }
-        if check_line(&line.trim()) {
-            counter += 1;
-        }
-    }
-    counter
-}
-
-fn check_partial_overlap(a: Vec<u8>, b: Vec<u8>) -> bool {
-    if a.len() == 0 || b.len() == 0 {
-        return false;
-    }
-
-    let a_ = if a.len() > b.len() { &b } else { &a };
-    let b_ = if a.len() > b.len() { &a } else { &b };
-
-    for x in a_ {
-        if b_.contains(&x) {
-            return true;
-        }
-    }
-    false
-}
-
-fn check_line_2(input: &str) -> bool {
-    let (a, b) = input.split_at(input.find(',').unwrap());
-    check_partial_overlap(vector_from_input(a), vector_from_input(&b[1..]))
+    part(&lines, true)
 }
 
 fn part2(lines: &[&str]) -> u32 {
-    let mut counter = 0;
-    for line in lines {
-        if line.trim().len() == 0 {
-            continue;
-        }
-        if check_line_2(&line.trim()) {
-            counter += 1;
-        }
-    }
-    counter
+    part(&lines, false)
 }
 
 struct ExpectedResult {
