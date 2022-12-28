@@ -60,6 +60,9 @@ fn test_find_duplicates_part_2() {
     assert_eq!(find_duplicates_part_2("abc", "b8ca", "b8cr"), ['b', 'c']);
 }
 
+/// Return priority based on the
+/// input char.
+/// Valid input chars: a-zA-Z
 fn get_priority(a: char) -> u32 {
     let value = a as u32;
     if value < 97 {
