@@ -70,6 +70,10 @@ fn main() {
 
     let args: Vec<String> = env::args().skip(1).collect();
     assert!(args.len() == 1);
+    if args.len() != 1 {
+        eprintln!("Usage: main <advent_of_code_cookie>");
+        std::process::exit(1);
+    }
 
     let cookie = format!("session={}", args[0]);
 
