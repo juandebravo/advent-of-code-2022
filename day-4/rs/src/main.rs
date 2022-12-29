@@ -76,8 +76,14 @@ fn test_vector_from_input() {
 }
 
 fn check_line(input: &str, full: bool) -> bool {
-    let (a, b) = input.split_at(input.find(',').unwrap());
-    check_overlap(vector_from_input(a), vector_from_input(&b[1..]), full)
+    match input.find(',') {
+        Some(index) => {
+            let a = &input[..index];
+            let b = &input[index + 1..];
+            check_overlap(vector_from_input(a), vector_from_input(&b), full)
+        }
+        None => panic!("Invalid input"),
+    }
 }
 
 #[test]
@@ -113,12 +119,12 @@ struct ExpectedResult {
     part2: u32,
 }
 
-fn main() {
-    let expected_result = ExpectedResult {
-        part1: 530,
-        part2: 903,
-    };
+static EXPECTED_RESULT: ExpectedResult = ExpectedResult {
+    part1: 530,
+    part2: 903,
+};
 
+fn main() {
     let args: Vec<String> = env::args().skip(1).collect();
     assert!(args.len() == 1);
     let cookie = format!("session={}", args[0]);
@@ -128,8 +134,8 @@ fn main() {
     match data {
         Ok(value) => {
             let lines = value.split("\n").collect::<Vec<&str>>();
-            assert_eq!(part1(&lines), expected_result.part1);
-            assert_eq!(part2(&lines), expected_result.part2);
+            assert_eq!(part1(&lines), EXPECTED_RESULT.part1);
+            assert_eq!(part2(&lines), EXPECTED_RESULT.part2);
         }
         Err(e) => panic!("{}", format!("Invalid data {:?}", e)),
     }
