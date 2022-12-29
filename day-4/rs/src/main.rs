@@ -56,7 +56,7 @@ fn vector_from_input(input: &str) -> Vec<u8> {
                 u8::from_str(&input[index + 1..]),
             ) {
                 (Ok(l), Ok(r)) => {
-                    for x in l..r + 1 {
+                    for x in l..=r {
                         value.push(x);
                     }
                 }
