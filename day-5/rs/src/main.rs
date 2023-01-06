@@ -1,5 +1,5 @@
+use aoc_client;
 use regex::Regex;
-use reqwest::blocking::Client;
 use std::cmp::{Eq, PartialEq};
 use std::collections::HashMap;
 use std::env;
@@ -21,14 +21,6 @@ impl PartialEq for Input {
 }
 
 impl Eq for Input {}
-
-fn get_data(cookie: String) -> Result<String, reqwest::Error> {
-    let url = "https://adventofcode.com/2022/day/5/input";
-    let client = Client::new();
-
-    let resp = client.get(url).header("cookie", cookie).send();
-    resp?.text()
-}
 
 fn parse_line(line: &str) -> Input {
     let re = Regex::new(r"^[^\d]*\b(\d*)\b[^\d]*\b(\d*)\b[^\d]*\b(\d*)").unwrap();
@@ -170,7 +162,7 @@ fn main() {
     assert!(args.len() == 1);
 
     let cookie = format!("session={}", args[0]);
-    let data = get_data(cookie);
+    let data = aoc_client::get_data(cookie, 5);
 
     match data {
         Ok(value) => {

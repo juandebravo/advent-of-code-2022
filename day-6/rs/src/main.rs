@@ -1,14 +1,5 @@
-use reqwest::blocking::Client;
 use std::collections::HashSet;
 use std::env;
-
-fn get_data(cookie: String) -> Result<String, reqwest::Error> {
-    let url = "https://adventofcode.com/2022/day/6/input";
-    let client = Client::new();
-
-    let resp = client.get(url).header("cookie", cookie).send();
-    resp?.text()
-}
 
 fn is_unique(s: &str) -> bool {
     let mut set = HashSet::new();
@@ -68,7 +59,7 @@ fn main() {
 
     let cookie = format!("session={}", args[0]);
 
-    let data = get_data(cookie);
+    let data = aoc_client::get_data(cookie, 6);
     match data {
         Ok(value) => {
             let lines = value.split("\n").collect::<Vec<&str>>();

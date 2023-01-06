@@ -1,3 +1,4 @@
+use aoc_client;
 use std::env;
 
 fn get_max(a: u32, b: u32) -> u32 {
@@ -12,14 +13,6 @@ fn get_max(a: u32, b: u32) -> u32 {
 fn test_get_max() {
     assert_eq!(get_max(1, 2), 2);
     assert_eq!(get_max(1, 0), 1);
-}
-
-fn get_data(cookie: String) -> Result<String, reqwest::Error> {
-    let url = "https://adventofcode.com/2022/day/1/input".to_string();
-    let client = reqwest::blocking::Client::new();
-
-    let resp = client.get(url).header("cookie", cookie).send();
-    resp?.text()
 }
 
 fn part1(lines: &Vec<&str>) -> u32 {
@@ -77,21 +70,13 @@ fn main() {
 
     let cookie = format!("session={}", args[0]);
 
-    let data = get_data(cookie);
+    let data = aoc_client::get_data(cookie, 1);
     match data {
         Ok(value) => {
             let lines = value.split("\n").collect::<Vec<&str>>();
 
             assert_eq!(part1(&lines), expected_result.part1);
             assert_eq!(part2(&lines), expected_result.part2);
-
-            println!(
-                "{}",
-                format!(
-                    "Done! \n\tpart1: {}\n\tpart2: {}",
-                    expected_result.part1, expected_result.part2
-                )
-            );
         }
         Err(e) => panic!("{}", format!("Invalid data {:?}", e)),
     }

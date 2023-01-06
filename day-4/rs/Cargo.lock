@@ -3,6 +3,13 @@
 version = 3
 
 [[package]]
+name = "aoc_client"
+version = "0.1.0"
+dependencies = [
+ "reqwest",
+]
+
+[[package]]
 name = "autocfg"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -536,7 +543,7 @@ dependencies = [
 name = "rs"
 version = "0.1.0"
 dependencies = [
- "reqwest",
+ "aoc_client",
 ]
 
 [[package]]

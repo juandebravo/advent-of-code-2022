@@ -1,13 +1,5 @@
-use reqwest::blocking::Client;
+use aoc_client;
 use std::env;
-
-fn get_data(cookie: String) -> Result<String, reqwest::Error> {
-    let url = "https://adventofcode.com/2022/day/3/input";
-    let client = Client::new();
-
-    let resp = client.get(url).header("cookie", cookie).send();
-    resp?.text()
-}
 
 fn split_in_two(value: &str) -> (&str, &str) {
     assert!(value.len() % 2 == 0, "Invalid input");
@@ -140,7 +132,7 @@ fn main() {
     assert!(args.len() == 1);
     let cookie = format!("session={}", args[0]);
 
-    let data = get_data(cookie);
+    let data = aoc_client::get_data(cookie, 3);
 
     match data {
         Ok(value) => {

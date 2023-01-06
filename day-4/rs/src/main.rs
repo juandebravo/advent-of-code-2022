@@ -1,14 +1,6 @@
-use reqwest::blocking::Client;
+use aoc_client;
 use std::env;
 use std::str::FromStr;
-
-fn get_data(cookie: String) -> Result<String, reqwest::Error> {
-    let url = "https://adventofcode.com/2022/day/4/input";
-    let client = Client::new();
-
-    let resp = client.get(url).header("cookie", cookie).send();
-    resp?.text()
-}
 
 fn check_overlap(a: Vec<u8>, b: Vec<u8>, full: bool) -> bool {
     if a.len() == 0 || b.len() == 0 {
@@ -129,7 +121,7 @@ fn main() {
     assert!(args.len() == 1);
     let cookie = format!("session={}", args[0]);
 
-    let data = get_data(cookie);
+    let data = aoc_client::get_data(cookie, 4);
 
     match data {
         Ok(value) => {
