@@ -155,6 +155,16 @@ fn part2(lines: &[&str]) -> String {
     execute_with_reverse(lines, true)
 }
 
+struct ExpectedResult<'a> {
+    part1: &'a str,
+    part2: &'a str,
+}
+
+static EXPECTED_RESULT: ExpectedResult = ExpectedResult {
+    part1: "MQSHJMWNH",
+    part2: "LLWJRBHVZ",
+};
+
 fn main() {
     let args = env::args().skip(1).collect::<Vec<String>>();
     assert!(args.len() == 1);
@@ -165,8 +175,8 @@ fn main() {
     match data {
         Ok(value) => {
             let lines = value.split("\n").collect::<Vec<&str>>();
-            assert_eq!(part1(&lines), "MQSHJMWNH");
-            assert_eq!(part2(&lines), "LLWJRBHVZ")
+            assert_eq!(part1(&lines), EXPECTED_RESULT.part1);
+            assert_eq!(part2(&lines), EXPECTED_RESULT.part2)
         }
         Err(e) => panic!("{}", format!("Invalid data {:?}", e)),
     }
