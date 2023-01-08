@@ -1,26 +1,17 @@
 use aoc_client;
 use regex::Regex;
-use std::cmp::{Eq, PartialEq};
 use std::collections::HashMap;
 use std::env;
 use std::str::FromStr;
 
 type Table<'a> = HashMap<u8, Vec<&'a str>>;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 struct Input {
     quantity: u8,
     from: u8,
     to: u8,
 }
-
-impl PartialEq for Input {
-    fn eq(&self, other: &Self) -> bool {
-        self.quantity == other.quantity && self.from == other.from && self.to == other.to
-    }
-}
-
-impl Eq for Input {}
 
 fn parse_line(line: &str) -> Input {
     let re = Regex::new(r"^[^\d]*\b(\d*)\b[^\d]*\b(\d*)\b[^\d]*\b(\d*)").unwrap();
