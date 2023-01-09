@@ -136,14 +136,15 @@ fn test_check_total_folder_size() {
 
 #[test]
 fn test_folder_path() {
-    let mut root = Folder::new("");
-
-    let mut foo = Folder::new("foo");
-    let mut bar = Folder::new("bar");
     let bazz = Folder::new("bazz");
 
+    let mut bar = Folder::new("bar");
     bar.add_folder(bazz);
+
+    let mut foo = Folder::new("foo");
     foo.add_folder(bar);
+
+    let mut root = Folder::new("");
     root.add_folder(foo);
 
     assert_eq!(root.path(), "/");
